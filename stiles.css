@@ -1,0 +1,132 @@
+@charset "utf-8";
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #CCC;
+	text-decoration: none;
+	background-color: #00101c;
+}
+
+h1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: lighter;
+	color: #333;
+}
+
+
+.left-align-60 {
+	text-align: left;
+	padding: 10px;
+	width: 40%;
+	display:inline-block;
+}
+
+
+#cabeza {
+	text-align: center;
+}
+#menu {
+	text-align: center;
+	padding: 5px;
+	height: 40px;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-top-style: dotted;
+	border-right-style: none;
+	border-bottom-style: dotted;
+	border-left-style: none;
+	border-top-color: #CCC;
+	border-right-color: #CCC;
+	border-bottom-color: #CCC;
+	border-left-color: #CCC;
+	background-color: #00233d;
+}
+#loader {
+	text-align: center;
+	display: none;
+}
+
+#menu ul {
+	margin: 5;
+	padding: 0;
+	list-style-type: none; 
+
+}
+#menu ul li {
+	display: inline;
+	text-decoration: none;
+	font-size: 14px;
+	color: #333;
+	background-color: #CCC;
+	text-align: center;
+	margin-right: 20px;
+	height: 20px;
+	padding-top: 5px;
+	padding-right: 15px;
+	padding-bottom: 5px;
+	padding-left: 15px;
+	border-radius:5px;
+}
+
+#menu ul li:hover{
+
+	background-color: #0067b5;
+
+}
+#lista ul li {
+	list-style-type: none;
+}
+
+
+#separador {
+	height: 20px;
+}
+#cuerpo {
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #CCC;
+	padding: 20px;
+	text-align: center;
+}
+#pie {
+	text-align: center;
+	margin-top: 20px;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	border-top-width: thin;
+	border-top-style: dotted;
+	border-top-color: #CCC;
+}
+#menu ul li {
+	cursor: pointer;
+}
+#tuit {
+	font-size: medium;
+	font-weight: bold;
+	color: #333;
+	text-decoration: none;
+	text-align: left;
+	padding: 10px;
+	width: 40%;
+	border: thin dotted #333;
+	border-radius:10px;
+	display:inline-block;
+}
+input {
+	font-size: medium;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: none;
+	background-color: #00101c;
+	border: thin dotted #CCC;
+	border-radius: 5px;
+	padding-top: 5px;
+	padding-right: 15px;
+	padding-bottom: 5px;
+	padding-left: 15px;
+}
