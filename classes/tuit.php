@@ -1,5 +1,6 @@
 <?php
 include_once("dbObjeto.php");
+include_once("JSearchString.php");
 
 class Tuit extends dbObjeto{
 
@@ -53,16 +54,15 @@ class Tuit extends dbObjeto{
 		$this->actualizar();
 	}
 		
-	function obtenerUltimo(){
-		$sql = "SELECT MAX(creado) AS ultimo FROM `tuits` WHERE idTermino = $this->idTermino";
-		$result = mysql_query($sql) or die("tuit->obtenerImpactoTotal: error en consulta".mysql_error()."SQL: ".$sql);
-		return mysql_result($result,0,"ultimo");
-		}
+
 	
 	function obtenerPrimero(){
-		$sql = "SELECT MIN(creado) AS primero FROM `tuits` WHERE idTermino = $this->idTermino";
+		$sql = "SELECT * FROM `tuits` WHERE idTuit NOT IN (SELECT idTuit FROM articles) ORDER BY Creado ASC LIMIT 1";
 		$result = mysql_query($sql) or die("tuit->obtenerImpactoTotal: error en consulta".mysql_error()."SQL: ".$sql);
-		return mysql_result($result,0,"primero");
+		$this->lista = $result;
+		$this->total = mysql_num_rows($result);
+		$this->indice = 0;
+		$this->actualizar();
 		}
 	
 	function obtenerMenciones($idusuario){
@@ -108,6 +108,29 @@ class Tuit extends dbObjeto{
 		mysql_query($sql) or die("tuit->eliminar(): error en consulta".mysql_error()."SQL: ".$sql);
 	}
 	
+	
+	//------------------------------- DENOISE FUNTIONS
+	
+	private function removeMentions($tweet){
+		$token = explode(" ",$tweet);
+		$noMentions = "";
+		for($i = 0; $i < count($token); $i++){
+			$pos = strpos($token[$i], '@');
+			$posURL = strpos($token[$i], 'htt');
+			if($pos === false and $posURL === false){
+				$noMentions .= $token[$i]." ";
+			}
+		}
+		return $noMentions;
+	}
+	
+	public function denoise(){
+		$jSS = new jSearchString();
+		$noMentions = $this->removeMentions($this->texto);
+		$noStopWords = $jSS->parseString( strtolower($noMentions));
+		return $noStopWords;
+	}
+
 
 }
 ?>
