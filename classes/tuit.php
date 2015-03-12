@@ -127,7 +127,8 @@ class Tuit extends dbObjeto{
 	public function denoise(){
 		$jSS = new jSearchString();
 		$noMentions = $this->removeMentions($this->texto);
-		$noStopWords = $jSS->parseString( strtolower($noMentions));
+		//$noStopWords = $jSS->parseString( strtolower($noMentions));
+		$noStopWords = $noMentions;
 		return $noStopWords;
 	}
 

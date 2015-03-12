@@ -28,5 +28,14 @@ class jSearchString {
 			
 		return trim($string);
 	}
+	
+	//added on MArch 10 2015 By Pch
+	function isStopword($string){
+		if(in_array(strtolower(" ".$string." "), $this->stopwords)){
+			return true;
+		}else{
+			return false;
+			}
+	}
 }
 ?>
