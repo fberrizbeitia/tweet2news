@@ -3,13 +3,13 @@ require_once("conexion.php");
 require_once("../classes/tuit.php");
 require_once("../classes/wordnet.php");
 require_once("../classes/wikipedia.php");
-require_once("../classes/dbpedia.php");
+require_once("../classes/ClodArticle.php");
 
 // for debugging
 
 ini_set('xdebug.var_display_max_depth', 5);
 ini_set('xdebug.var_display_max_children', 256);
-ini_set('xdebug.var_display_max_data', 6000);
+ini_set('xdebug.var_display_max_data', 50000);
 	
 
 //-- get the tuit
@@ -59,22 +59,27 @@ var_dump($tuit->texto);
 	//obtain the wikipedia pages ID's using the API and discard unsolved candidates
 		
 	//first we iterate throu the bigrams because they have more semantic value
+	//var_dump($BG_candidates);
 	$BG_wikipedia_list = obtainWikipediaPageIDs($BG_candidates);
 	$UG_unkown_candidates = cleanUnigramCandidates($UG_candidates,$BG_wikipedia_list);
+	//var_dump($UG_unkown_candidates);	
 	$UG_wikipedia_list = obtainWikipediaPageIDs($UG_unkown_candidates);
 
-	var_dump($BG_wikipedia_list);
-	var_dump($UG_wikipedia_list);
+	//var_dump($BG_wikipedia_list);
+	//var_dump($UG_wikipedia_list);
 		
 	//with the IDs lets query dbpedia for the semantics
 	
-	$objDBpedia = new dbpedia();
+	$objArticle = new ClodArticle();
+	$objArticle->create($tuit);
 	
-	$objDBpedia->getSemantics($BG_wikipedia_list);
-	$objDBpedia->getSemantics($UG_wikipedia_list);
+	$objArticle->annotate($BG_wikipedia_list,$tuit->texto);
+	$objArticle->annotate($UG_wikipedia_list,$tuit->texto);
 	
+	//var_dump($objArticle->rNewsArticle);
 	
-	//--------------- Evaluate the ontologie and traverse the CLOD ---------------//
+	$objArticle->save();
+	
 
 
 closeConnection($conn);

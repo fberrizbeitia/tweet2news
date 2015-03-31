@@ -8,17 +8,11 @@ require_once("conexion.php");
 require_once("../classes/tuit.php");
 require_once("../classes/termino.php");
 require_once("../classes/classifier.php");
-require_once("twitteroauth-master/twitteroauth/twitteroauth.php");
-require_once("twitteroauth-master/config.php");
+require_once("../classes/twitter.php");
 
 
 
 if(true){
-	$oauth_token = '462908421-ldlyIPjaXNaifkJ6n3yh1aUV73c5oQnTTQfmNkvp';
-	$oauth_token_secret = 'wcVsV9SRZq5N2EMkWB5VQT0gK55z5Leq4PiwU7mN5Jw';
-	$oath = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $oauth_token, $oauth_token_secret);
-	
-	
 	
 	$tuit = new Tuit();
 	$termino = new Termino();
@@ -32,22 +26,20 @@ if(true){
 	$objClassifier->setTotals();
 	
 	$desde = "";
+	
+	$objTwitter = new twitter();
 	for($x = 1; $x <= 10; $x++){
-			echo($x);
 			$texto = urlencode('"'.$_GET["query"].'"');
 			$query= "https://api.twitter.com/1.1/search/tweets.json?q=$texto&lang=en&count=100&".$desde."show_user=true&include_entities=true&with_twitter_user_id=trues";
 			
-			//$json = file_get_contents($query, true); //getting the file content
-			$json = $oath->get($query);
-			//echo($json);
-
+			$json = $objTwitter->query($query);
 
 			$decode = json_decode($json, true); //getting the file content as array
 			$count = count($decode["statuses"]);	
 			
 			for($i=0;$i<$count;$i++){
 				//obtener los valores de para ser insertados;
-				$tuit->crear($decode["statuses"][$i]["id"]);		
+			//	$tuit->crear($decode["statuses"][$i]["id"]);		
 				$desde="since_id=".$decode["statuses"][$i]["id"];
 				$tuit->texto = str_replace("'"," ",$decode["statuses"][$i]["text"]);
 				$tuit->emisor = $decode["statuses"][$i]["user"]["id"];
@@ -99,9 +91,13 @@ if(true){
 					
 				$tuit->idTermino = $termino->idTermino;
 				
+				
+				
 				if($objClassifier->classify($tuit->texto)){ // only save docu-tweets
-					$tuit->guardar();
-				}
+					//$tuit->guardar();
+				}else{
+					//$tuit->eliminar();
+					}
 			} //for($i=0;$i<$count;$i++){
 	}//for($x = 1; $x <= 15; $x++){
 }//if(isset($_GET["idTermino"])){

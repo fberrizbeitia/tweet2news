@@ -1,29 +1,31 @@
 <?php
+include_once("JSearchString.php");
 
 function obtainWikipediaPageIDs($BG_candidates){
 	$WP_PageID = array();
 	$cont = 0;
+	$objSS = new jSearchString();
 	for($i = 0; $i < count($BG_candidates); $i++){
-		$url = "http://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&ppprop=disambiguation&redirects&titles=".urlencode($BG_candidates[$i])."&continue=";
-
-		$json = file_get_contents($url);
-		$decode = json_decode($json, true);
-		
-		if(count($decode) > 1){
-			$key = array_keys($decode["query"]["pages"]);
-			$pageId = $key[0]+0;
-		}else{
-			$pageId = 0;
+		if(!($objSS->isStopword($BG_candidates[$i]) and (count(explode(" ",$BG_candidates[$i])) == 1 ))){
+			$url = "http://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&ppprop=disambiguation&redirects&titles=".urlencode($BG_candidates[$i])."&continue=";
+	
+			$json = file_get_contents($url);
+			$decode = json_decode($json, true);
+			
+			if(count($decode) > 1){
+				$key = array_keys($decode["query"]["pages"]);
+				$pageId = $key[0]+0;
+			}else{
+				$pageId = 0;
+				}
+			
+			if($pageId > 0){
+	
+				$url = "<http://en.wikipedia.org/wiki/".str_replace(" ","_",$decode["query"]["pages"][$pageId]["title"]).">";
+				$WP_PageID[$cont] = array($BG_candidates[$i],$url,$decode["query"]["pages"][$pageId]["title"]);
+				$cont++;
 			}
-		
-		
-		
-		if($pageId > 0){
-
-			$url = "<http://en.wikipedia.org/wiki/".str_replace(" ","_",$decode["query"]["pages"][$pageId]["title"]).">";
-			$WP_PageID[$cont] = array($BG_candidates[$i],$url,$decode["query"]["pages"][$pageId]["title"]);
-			$cont++;
-		}
+		}//if(!$objSS->isStopword($BG_candidates[$i])){
 	}
 	
 	return $WP_PageID;

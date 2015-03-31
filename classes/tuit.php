@@ -4,7 +4,7 @@ include_once("JSearchString.php");
 
 class Tuit extends dbObjeto{
 
-	var $idTuit;
+	var $idTuit = null;
 	var $menciones;
 	var $hashtags;
 	var $url;
@@ -104,10 +104,11 @@ class Tuit extends dbObjeto{
 	
 	function eliminar(){
 		//eliminar el cargo de la tabla
-		$sql = "DELETE FROM tuits WHERE idTuit=$this->idTuit";
-		mysql_query($sql) or die("tuit->eliminar(): error en consulta".mysql_error()."SQL: ".$sql);
+		if($this->idTuit != null){
+			$sql = "DELETE FROM tuits WHERE idTuit=$this->idTuit";
+			mysql_query($sql) or die("tuit->eliminar(): error en consulta".mysql_error()."SQL: ".$sql);
+		}
 	}
-	
 	
 	//------------------------------- DENOISE FUNTIONS
 	
@@ -127,9 +128,8 @@ class Tuit extends dbObjeto{
 	public function denoise(){
 		$jSS = new jSearchString();
 		$noMentions = $this->removeMentions($this->texto);
-		//$noStopWords = $jSS->parseString( strtolower($noMentions));
-		$noStopWords = $noMentions;
-		return $noStopWords;
+		$noSymbols = $jSS->removeSymbols( $noMentions);
+		return $noSymbols;
 	}
 
 
